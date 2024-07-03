@@ -1,0 +1,25 @@
+{
+    "search-button": "//button[@data-element='search-button']",
+    "search-form": "//input[@data-element='search-form-input']",
+    "search-submit-button": "//button[@data-element='search-submit-button']",
+
+    "result-page-select-element": "name:s",
+    "select-option-value": "Newest",
+
+    "popup-button-close": "/div/div/div/div/a",
+    "popup-container-name": "name:metering-bottompanel",
+    "popup-dismiss-class-name": "met-flyout-close",
+
+    "find-all-checkboxes": "//ul[@data-name='Topics']//input[@type='checkbox']/following-sibling::span",
+    "find-specific-checkbox": "./preceding-sibling::input[@type='checkbox']",
+    "see-all-button": "//button//*[contains(.,'See All')]",
+    "checkbox-menu": "//ul[@data-name='Topics']",
+    
+
+    "search_result_contents": "//main[@class='search-results-module-main']//ul[@class='search-results-module-results-menu']",
+    "search_result_title_element": "h3.promo-title",
+    "search_result_description_element": "p.promo-description",
+    "search_result_timestamp_element": "p.promo-timestamp",
+    "search_result_image_element": "picture img.image",
+    "search_result_next_page": "//div[@class='search-results-module-pagination']/div[@class='search-results-module-next-page']/a"
+}
