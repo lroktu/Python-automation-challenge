@@ -1,7 +1,12 @@
 import json
-import logging
 from robocorp.tasks import task
 from RPA.Robocorp.WorkItems import WorkItems
+import logging
+from libraries.custom_browser_config import custom_browser_config as custom_browser
+from libraries.data_storage_procedures import data_storage_procedures
+from libraries.robotic_result_page_procedures import robotic_result_page_procedures as rtc_respag_procedures
+from libraries.data_analysis import data_analysis
+from libraries.schema_validator import schema_validator
 from selenium.webdriver.common.keys import Keys
 from libraries.CustomBrowserConfig import CustomBrowserConfig as custom_browser
 from libraries.dataStorageProcedures import DataStorageProcedures
@@ -75,7 +80,6 @@ def execute_result_page_procedures(result_page_procedures):
     result_page_procedures.select_checkboxes()
     return result_page_procedures.get_search_result_content()
 
-
 def goto_result_page(browser, selectors, input_fields):
     """
     Navigates to the result page by interacting with the browser.
@@ -127,7 +131,16 @@ def execute_storage_procedures(captured_data):
     """
     DataStorageProcedures().save_data_results(captured_data)
 
+def execute_data_analysis(captured_data, search_phrase):
+    d_analysis = data_analysis()
+    for item in captured_data:
+        text = item["content_title"] + item["content_description"]
+        item["search_phrase_ocurrences"] = d_analysis.count_number_of_ocurrences(text, search_phrase)
+        item["fiat_currency_exists"] = d_analysis.is_dolar_fiat_currency_present(text)
 
+def execute_storage_procedures(captured_data):
+    data_storage_procedures().save_data_results(captured_data)
+    
 def get_work_items():
     """
     Retrieves work items from the `WorkItems` class, validates the input fields using the `schema_validator` class,

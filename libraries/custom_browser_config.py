@@ -15,7 +15,7 @@ class custom_browser_config:
             data = json.load(f)
         self.browser = Selenium(**options)
         self.browser.set_selenium_speed(1.0)
-        self.browser.open_available_browser(headless=False, url=data["url"], maximized=True)
+        self.browser.open_available_browser(headless=True, url=data["url"], maximized=True)
 
     def get_browser(self):
         return self.browser
