@@ -2,7 +2,6 @@ import datetime
 import logging
 from selenium.webdriver.common.by import By
 from libraries.enums.topics import Topics
-from selenium.common.exceptions import ElementClickInterceptedException
 
 
 class RoboticResultPageProcedures:
@@ -66,15 +65,15 @@ class RoboticResultPageProcedures:
                     break
 
     def __click_see_all_buttons(self):
-        self.browser.wait_until_element_is_visible(
-            self.selectors["checkbox-menu"], self.default_wait_time
-        )
-        buttons = self.browser.find_elements(self.selectors["see-all-button"])
         try:
+            self.browser.wait_until_element_is_visible(
+                self.selectors["checkbox-menu"], self.default_wait_time
+            )
+            buttons = self.browser.find_elements(self.selectors["see-all-button"])
             for button in buttons:
                 button.click()
-        except ElementClickInterceptedException:
-            self.logger.error("Element click intercepted! Trying to bypass...")
+        except Exception as e:
+            self.logger.error(e)
             self.__take_action_if_popup_exists()
             for button in buttons:
                 button.click()
