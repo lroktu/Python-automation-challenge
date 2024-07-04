@@ -12,8 +12,9 @@
 
     "find-all-checkboxes": "//ul[@data-name='Topics']//input[@type='checkbox']/following-sibling::span",
     "find-specific-checkbox": "./preceding-sibling::input[@type='checkbox']",
-    "see-all-button": "//button//*[contains(.,'See All')]",
+    "see-all-button": "//button[@class='button see-all-button']",
     "checkbox-menu": "//ul[@data-name='Topics']",
+    "checkbox-single-option": "//div[@class='checkbox-input']//label[@class='checkbox-input-label']/span[text()=",
     
 
     "search-result-contents": "//main[@class='search-results-module-main']//ul[@class='search-results-module-results-menu']",

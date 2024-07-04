@@ -41,42 +41,29 @@ class RoboticResultPageProcedures:
         if self.input_fields["topics"] == [Topics.ALL.value]:
             return
         self.logger.info("Filtering results by marking checkboxes...")
-        self.__click_see_all_buttons()
-        self.__take_action_if_popup_exists()
-        is_see_all_buttons_clicked = True
         for topic in self.input_fields["topics"]:
             self.browser.wait_until_element_is_visible(
                 self.selectors["checkbox-menu"], self.default_wait_time
             )
+            self.__click_see_all_buttons()
+            self.__take_action_if_popup_exists()
             checkboxes = self.browser.find_elements(
                 self.selectors["find-all-checkboxes"]
             )
             for span in checkboxes:
-                if is_see_all_buttons_clicked == False:
-                    self.logger.info(span.text)
-                    self.__click_see_all_buttons()
-                    is_see_all_buttons_clicked = True
                 if span.text == topic:
-                    checkbox = span.find_element(
-                        "xpath", self.selectors["find-specific-checkbox"]
-                    )
-                    checkbox.click()
-                    is_see_all_buttons_clicked = False
+                    selector = self.selectors["checkbox-single-option"] + f"'{span.text}']"
+                    self.browser.wait_until_element_is_visible(selector)
+                    self.browser.click_element_when_visible(selector)
                     break
 
     def __click_see_all_buttons(self):
         try:
-            self.browser.wait_until_element_is_visible(
-                self.selectors["checkbox-menu"], self.default_wait_time
-            )
-            buttons = self.browser.find_elements(self.selectors["see-all-button"])
-            for button in buttons:
-                button.click()
+            self.browser.wait_and_click_button(self.selectors["see-all-button"])
         except Exception as e:
             self.logger.error(e)
             self.__take_action_if_popup_exists()
-            for button in buttons:
-                button.click()
+            self.browser.wait_and_click_button(self.selectors["see-all-button"])
 
     def select_newest_results(self):
         """

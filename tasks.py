@@ -1,6 +1,7 @@
 import json
 import logging
-from robocorp.tasks import task
+import os
+from robocorp.tasks import task, get_output_dir
 from RPA.Robocorp.WorkItems import WorkItems
 from selenium.webdriver.common.keys import Keys
 from libraries.CustomBrowserConfig import CustomBrowserConfig as custom_browser
@@ -47,6 +48,8 @@ def minimal_task():
             except Exception as e:
                 logging.error(str(e))
                 logging.error("Error extracting data, trying again...")
+                browser.set_screenshot_directory(path=os.path.join(get_output_dir()))
+                browser.capture_page_screenshot("error.png")
                 browser.close_browser()
                 number_of_attempts += 1
         logging.info("Data extracted successfully. Now executing data analysis...")
@@ -58,7 +61,6 @@ def minimal_task():
         )
     except Exception as e:
         logging.error(e)
-
 
 
 def execute_result_page_procedures(result_page_procedures):
