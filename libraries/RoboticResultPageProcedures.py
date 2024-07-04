@@ -2,6 +2,7 @@ import datetime
 import logging
 from selenium.webdriver.common.by import By
 from libraries.enums.topics import Topics
+from selenium.common.exceptions import ElementClickInterceptedException
 
 
 class RoboticResultPageProcedures:
@@ -28,9 +29,8 @@ class RoboticResultPageProcedures:
         self.selectors = selectors
         self.input_fields = input_fields
         self.logger = logging.getLogger(__name__)
-        self.popup_clicked = False
         self.days_in_month = 30
-        self.default_wait_time = 10
+        self.default_wait_time = 45
 
     def select_checkboxes(self):
         """
@@ -53,8 +53,6 @@ class RoboticResultPageProcedures:
                 self.selectors["find-all-checkboxes"]
             )
             for span in checkboxes:
-                if self.popup_clicked == False:
-                    self.__take_action_if_popup_exists()
                 if is_see_all_buttons_clicked == False:
                     self.logger.info(span.text)
                     self.__click_see_all_buttons()
@@ -72,8 +70,14 @@ class RoboticResultPageProcedures:
             self.selectors["checkbox-menu"], self.default_wait_time
         )
         buttons = self.browser.find_elements(self.selectors["see-all-button"])
-        for button in buttons:
-            button.click()
+        try:
+            for button in buttons:
+                button.click()
+        except ElementClickInterceptedException:
+            self.logger.error("Element click intercepted! Trying to bypass...")
+            self.__take_action_if_popup_exists()
+            for button in buttons:
+                button.click()
 
     def select_newest_results(self):
         """
@@ -120,7 +124,6 @@ class RoboticResultPageProcedures:
             shadow_root.find_element(
                 By.CLASS_NAME, self.selectors["popup-dismiss-class-name"]
             ).click()
-            self.popup_clicked = True
 
         except Exception as e:
             self.logger.info("popup doesnt exists")
