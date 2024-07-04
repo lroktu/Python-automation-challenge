@@ -58,7 +58,7 @@ def minimal_task():
         )
     except Exception as e:
         logging.error(e)
-        browser.close_browser()
+
 
 
 def execute_result_page_procedures(result_page_procedures):
