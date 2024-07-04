@@ -51,12 +51,6 @@ class RoboticResultPageProcedures:
                 self.selectors["find-all-checkboxes"]
             )
             for span in checkboxes:
-                if self.popup_clicked == False:
-                    self.__take_action_if_popup_exists()
-                if is_see_all_buttons_clicked == False:
-                    self.logger.info(span.text)
-                    self.__click_see_all_buttons()
-                    is_see_all_buttons_clicked = True
                 if span.text == topic:
                     selector = self.selectors["checkbox-single-option"] + f"'{span.text}']"
                     self.browser.wait_until_element_is_visible(selector)
@@ -64,12 +58,12 @@ class RoboticResultPageProcedures:
                     break
 
     def __click_see_all_buttons(self):
-        self.browser.wait_until_element_is_visible(
-            self.selectors["checkbox-menu"], self.default_wait_time
-        )
-        buttons = self.browser.find_elements(self.selectors["see-all-button"])
-        for button in buttons:
-            button.click()
+        try:
+            self.browser.wait_and_click_button(self.selectors["see-all-button"])
+        except Exception as e:
+            self.logger.error(e)
+            self.__take_action_if_popup_exists()
+            self.browser.wait_and_click_button(self.selectors["see-all-button"])
 
     def select_newest_results(self):
         """
