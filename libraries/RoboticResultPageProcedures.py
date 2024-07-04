@@ -29,7 +29,7 @@ class RoboticResultPageProcedures:
         self.input_fields = input_fields
         self.logger = logging.getLogger(__name__)
         self.days_in_month = 30
-        self.default_wait_time = 45
+        self.default_wait_time = 25
 
     def select_checkboxes(self):
         """
@@ -40,7 +40,7 @@ class RoboticResultPageProcedures:
         """
         if self.input_fields["topics"] == [Topics.ALL.value]:
             return
-        self.logger.info("Filtering results by marking checkboxes...")
+        self.logger.debug("Filtering results by marking checkboxes...")
         self.__click_see_all_buttons()
         self.__take_action_if_popup_exists()
         is_see_all_buttons_clicked = True
@@ -53,17 +53,24 @@ class RoboticResultPageProcedures:
             )
             for span in checkboxes:
                 if is_see_all_buttons_clicked == False:
-                    self.logger.info(span.text)
+                    self.logger.debug(span.text)
                     self.__click_see_all_buttons()
                     is_see_all_buttons_clicked = True
                 if span.text == topic:
                     checkbox = span.find_element(
                         "xpath", self.selectors["find-specific-checkbox"]
                     )
-                    checkbox.click()
-                    is_see_all_buttons_clicked = False
-                    break
-
+                    try:
+                        checkbox.click()
+                        is_see_all_buttons_clicked = False
+                        break
+                    except Exception as e:
+                        self.logger.error(e)
+                        self.__take_action_if_popup_exists()
+                        checkbox.click()
+                        is_see_all_buttons_clicked = False
+                        break
+                    
     def __click_see_all_buttons(self):
         try:
             self.browser.wait_until_element_is_visible(
@@ -88,7 +95,7 @@ class RoboticResultPageProcedures:
         Returns:
             None
         """
-        self.logger.info("Filtering results by newest results...")
+        self.logger.debug("Filtering results by newest results...")
         self.browser.wait_until_element_is_visible(
             self.selectors["result-page-select-element"], self.default_wait_time
         )
@@ -125,7 +132,7 @@ class RoboticResultPageProcedures:
             ).click()
 
         except Exception as e:
-            self.logger.info("popup doesnt exists")
+            self.logger.debug("popup doesnt exists")
             self.logger.warning(e)
 
     def get_search_result_content(self):
@@ -152,7 +159,7 @@ class RoboticResultPageProcedures:
             )
             result_li_elements = result_ul_element.find_elements(By.TAG_NAME, "li")
             if len(result_li_elements) == 0:
-                self.logger.info("No results found")
+                self.logger.debug("No results found")
                 break
             for li in result_li_elements:
                 content_timestamp = (
@@ -178,7 +185,7 @@ class RoboticResultPageProcedures:
                         By.CSS_SELECTOR, self.selectors["search-result-image-element"]
                     ).get_attribute("src")
                     results_list.append(content_properties)
-                    self.logger.info(content_properties)
+                    self.logger.debug(content_properties)
                     continue
                 break
             if min_timestamp <= content_timestamp:
