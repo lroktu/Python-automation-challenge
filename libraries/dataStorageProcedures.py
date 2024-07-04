@@ -1,12 +1,24 @@
 from concurrent.futures import ThreadPoolExecutor
 import json
 import os
+import logging
+import datetime
 from RPA.HTTP import HTTP
 from RPA.Excel.Files import Files
 from robocorp.tasks import get_output_dir
-import logging
-import datetime
-class data_storage_procedures:
+
+
+class DataStorageProcedures:
+    """
+    Initializes an instance of the data_storage_procedures class.
+    This constructor sets up the logger and reads the Excel configuration
+    file using the __read_excel_config() method.
+    Parameters:
+        None
+    Returns:
+        None
+    """
+
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.excel_config = self.__read_excel_config()
@@ -34,21 +46,28 @@ class data_storage_procedures:
             None
         """
         self.logger.info("Creating and saving data on xlxs file workbook...")
-        if ((data_results == None) | len(data_results) == 0):
+        if (data_results == None) | len(data_results) == 0:
             self.logger.info("No data to save")
             return
 
         excel = Files()
-        excel.create_workbook(path=os.path.join(get_output_dir(),self.excel_config["workbook_name"]), sheet_name=self.excel_config["worksheet_name"])
-        excel.append_rows_to_worksheet(data_results, header=True, name=self.excel_config["worksheet_name"])
+        excel.create_workbook(
+            path=os.path.join(get_output_dir(), self.excel_config["workbook_name"]),
+            sheet_name=self.excel_config["worksheet_name"],
+        )
+        excel.append_rows_to_worksheet(
+            data_results, header=True, name=self.excel_config["worksheet_name"]
+        )
         excel.save_workbook()
 
     def __download_executor(self, data_results):
         self.logger.info("Downloading images...")
-        with ThreadPoolExecutor(max_workers=self.excel_config["number_of_thread_workers"]) as executor: 
+        with ThreadPoolExecutor(
+            max_workers=self.excel_config["number_of_thread_workers"]
+        ) as executor:
             results = executor.map(self.__download_and_save_image, data_results)
         return list(results)
-    
+
     def __download_and_save_image(self, data):
         """
         Downloads an image from the given URL and saves it locally.
@@ -61,11 +80,15 @@ class data_storage_procedures:
             base_path = os.path.basename(data["image_src"])
             picture_filename = f"picture-{base_path}"
             data["picture_filename"] = picture_filename
-            data["timestamp"] = datetime.datetime.fromtimestamp(data["timestamp"]).strftime("%m/%d/%y")
+            data["timestamp"] = datetime.datetime.fromtimestamp(
+                data["timestamp"]
+            ).strftime("%m/%d/%y")
             http = HTTP()
-            http.download(data["image_src"], os.path.join(get_output_dir(), picture_filename))
+            http.download(
+                data["image_src"], os.path.join(get_output_dir(), picture_filename)
+            )
             self.logger.info(f"Downloaded image from URL: {data['image_src']}")
-            del data['image_src']
+            del data["image_src"]
         except Exception as e:
             msg = f"Error downloading image from URL: {data['url']}"
             self.logger.error(str(e))
@@ -79,6 +102,6 @@ class data_storage_procedures:
         Returns:
             dict: The configuration for the Excel file.
         """
-        with open('config/excel.json') as f:
+        with open("config/excel.json", encoding="utf-8") as f:
             excel_config = json.load(f)
         return excel_config

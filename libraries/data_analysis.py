@@ -1,12 +1,12 @@
-
 import logging
 import re
+
 
 class data_analysis:
     def __init__(self):
         self.logger = logging.getLogger(__name__)
-        self.fiat_patterns = [ r"\$\d+(?:\.\d+)?",  r"\d+ dollars", r"\d+ USD"]
-    
+        self.fiat_patterns = [r"\$\d+(?:\.\d+)?", r"\d+ dollars", r"\d+ USD"]
+
     def count_number_of_ocurrences(self, text, search_phrase):
         self.logger.info("Counting number of search phrase ocurrences")
         text_lower = text.lower()
