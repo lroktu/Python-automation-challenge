@@ -16,10 +16,10 @@
     "checkbox-menu": "//ul[@data-name='Topics']",
     
 
-    "search_result_contents": "//main[@class='search-results-module-main']//ul[@class='search-results-module-results-menu']",
-    "search_result_title_element": "h3.promo-title",
-    "search_result_description_element": "p.promo-description",
-    "search_result_timestamp_element": "p.promo-timestamp",
-    "search_result_image_element": "picture img.image",
-    "search_result_next_page": "//div[@class='search-results-module-pagination']/div[@class='search-results-module-next-page']/a"
+    "search-result-contents": "//main[@class='search-results-module-main']//ul[@class='search-results-module-results-menu']",
+    "search-result-title-element": "h3.promo-title",
+    "search-result-description-element": "p.promo-description",
+    "search-result-timestamp-element": "p.promo-timestamp",
+    "search-result-image-element": "picture img.image",
+    "search-result-next-page": "//div[@class='search-results-module-next-page']/a"
 }

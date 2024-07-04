@@ -2,7 +2,7 @@
   {
       "payload": {
           "search-phrase": "restaurant",
-          "topics": [],
+          "topics": ["Food", "Recipes"],
           "till-months-passed": 1
         }
   }
